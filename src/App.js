@@ -6,13 +6,17 @@ const apiUrl = 'http://localhost:3001';
 
 function App() {
 
-  axios.get(`${apiUrl}/your_endpoint`)
-    .then(response => {
-      console.log(response.data);
-    })
-    .catch(error => {
-      console.error('There was an error!', error);
-    });
+  const getPacientes = async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/pacientes`);
+      console.log(response.data)// Devuelve los datos de los pacientes
+
+    } catch (error) {
+      console.error('Error al obtener pacientes:', error);
+      return []; // Manejo de errores según tus necesidades
+    }
+  };
+
 
   const WaveContainer = styled.div`
     background: linear-gradient(to bottom, #00b2d6, #00b2d6);
@@ -66,10 +70,32 @@ function App() {
   `;
 
   return (
-    <WaveContainer>
-      <WaveAnimation />
 
-    </WaveContainer>
+    <>
+      {getPacientes().then(pacientes => {
+        return (
+          <Container>
+            <LeftSection>
+              <h1>Lista de pacientes</h1>
+              <ul>
+                {pacientes.map(paciente => (
+                  <li key={paciente.id}>
+                    {paciente.nombre} {paciente.apellido}
+                  </li>
+                ))}
+              </ul>
+            </LeftSection>
+            <RightSection>
+              <img
+                src="https://images.unsplash.com/photo-1606781904053-5b3e5b9d2b8b"
+                alt="pacientes"
+                style={{ width: "100%" }}
+              />
+            </RightSection>
+          </Container>
+        )
+      })}
+    </>
   );
 }
 
